@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\user;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -30,7 +31,7 @@ class UserController extends Controller
 
       $datos = new User;
       //$datos->user = $req->user;
-      $datos->pass = $req->pass;
+      $datos->pass = Hash::make($req->pass);
       //$datos->nombre = $req->nombre;
       //$datos->rol = $req->rol;
       $result = $datos->fill($req->all())->save();

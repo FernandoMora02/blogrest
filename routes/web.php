@@ -17,6 +17,9 @@ use Illuminate\Http\Request;
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
+$router->get('/login/{user}/{pass}', 'AuthController@login');
+
+$router->group(['middleware'=>['auth']], function() use($router){
 
 $router->get('/usuario', 'UserController@index');
 $router->get('/usuario/{user}', 'UserController@get');
@@ -36,3 +39,5 @@ $router->post('/post', 'PostController@create');
 $router->put('/post/{id}', 'PostController@update');
 $router->delete('/post/{id}', 'PostController@destroy');
 
+}
+);

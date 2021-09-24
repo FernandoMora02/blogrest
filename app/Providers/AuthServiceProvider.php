@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use App\Http\Controllers\JWT;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -31,8 +32,15 @@ class AuthServiceProvider extends ServiceProvider
         // the User instance via an API token or any other method necessary.
 
         $this->app['auth']->viaRequest('api', function ($request) {
-            if ($request->input('api_token')) {
-                return User::where('api_token', $request->input('api_token'))->first();
+            $token = $request->header('Authorization');
+            if(strstr($token,"Bearer")){
+                $token = substr($token,7);
+            }
+            if ($token) {
+                if(JWT::verify($token, env('JWT_SECRET', 'm79bT5vcGH62n1MU4vZ60vR1Jg6Vh5fd'))==0){
+                    $data = JWT::get_data($token, env('JWT_SECRET', 'm79bT5vcGH62n1MU4vZ60vR1Jg6Vh5fd'));
+                    return User::find($data['user']);
+                }
             }
         });
     }
